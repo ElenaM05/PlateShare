@@ -30,48 +30,10 @@ con.connect(function(err) {
                 return;
             }
 
-            let tableHTML = `
-                <html>
-                    <head>
-                        <title>Food Information</title>
-                        <style>
-                            table { border-collapse: collapse; width: 100%; }
-                            th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
-                            th { background-color: #f2f2f2; }
-                        </style>
-                    </head>
-                    <body>
-                        <h2>Unclaimed Food Information</h2>
-                        <table>
-                            <tr>
-                                <th>Donor ID</th>
-                                <th>Food Name</th>
-                                <th>Pickup Location</th>
-                                <th>Expiration Date</th>
-                            </tr>`;
-
-            
-            result.forEach((food) => {
-                const formattedExpirationDate = formatDate(food.expiration);
-                tableHTML += `
-                    <tr>
-                        <td>${food.did}</td>
-                        <td>${food.foodname}</td>
-                        <td>${food.pickuploc}</td>
-                        <td>${formattedExpirationDate}</td>
-                    </tr>`;
-            });
-
-            tableHTML += `
-                        </table>
-                    </body>
-                </html>`;
-
-            res.send(tableHTML);
+            res.json(result);
         }
     );
 });
-
 
 
 app.listen(3000, () => {
