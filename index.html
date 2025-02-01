@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Pickup Locations</title>
+    <style>
+        /* Set the size of the map */
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <h2>Food Pickup Locations</h2>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+        let map;
+
+        // Initialize Leaflet map
+        function initMap() {
+            // Create the map centered on a default location (Kochi, India)
+            map = L.map('map').setView([9.9788, 76.2811], 12); // lat, lon, zoom
+
+            // Set the OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            }).addTo(map);
+
+            // Fetch food locations from the server
+            fetch("/food-info")
+                .then((response) => response.json())
+                .then((locations) => {
+                    locations.forEach((food) => {
+                        const position = [food.pickup_lat, food.pickup_long];
+                        const marker = L.marker(position).addTo(map);
+
+                        // Add a popup for each marker with food details
+                        marker.bindPopup(`
+                            <strong>${food.foodname}</strong><br>
+                            Pickup Location: ${food.pickuploc}<br>
+                            Expiration Date: ${new Date(food.expiration).toLocaleDateString()}
+                        `);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error fetching food data: ", error);
+                });
+        }
+
+    
+        window.onload = initMap;
+    </script>
+</body>
+</html>
